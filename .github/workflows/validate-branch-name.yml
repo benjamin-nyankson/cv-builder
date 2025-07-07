@@ -1,0 +1,23 @@
+name: Validate Branch Name
+
+on:
+  create:
+    branches:
+      - '*'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH_NAME=${GITHUB_REF##*/}
+          echo "Branch name is $BRANCH_NAME"
+
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|release)\/[a-z0-9._-]+$ ]]; then
+            echo "❌ Branch name does not follow the convention!"
+            echo "✅ Allowed: feature/*, bugfix/*, hotfix/*, release/*"
+            exit 1
+          else
+            echo "✅ Branch name is valid."
+          fi
